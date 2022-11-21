@@ -1,6 +1,6 @@
 const $meuFormulario = document.querySelector('#form');
 const $listaTarefas = document.querySelector('#listaTarefas')
-const tarefas = JSON.parse(localStorage.getItem("Tarefas")) || [];
+const tarefasTotais = JSON.parse(localStorage.getItem("Tarefas")) || [];
 
 
 const modelo = {
@@ -11,16 +11,13 @@ const modelo = {
             content: 'CTD'
         }
     ],
-    criaTarefa(info, somenteHTML = false){
-        
-        if(!somenteHTML){
-        tarefas.push(info);
-        }
+    criaTarefa(tarefa){
+                
         $listaTarefas.insertAdjacentHTML('afterbegin', `
-            <li data-id="${info.id}">
+            <li data-id="${tarefa.id}">
             <button class="botao__apagar">X</button>
             <span contenteditable>
-            ${info.content}       
+            ${tarefa.content}       
             </span>
             </li>
     
@@ -29,12 +26,14 @@ const modelo = {
     },
     leTarefa(){
         modelo.tarefas.forEach(({id, owner, content}) => {
-            modelo.criaTarefa({id, owner: owner, content: content}, true);
+            modelo.criaTarefa({id: id, owner: owner, content: content});
             
         })
-        tarefas.forEach((tarefa) =>{
-            modelo.criaTarefa(tarefa);
-        })
+        for(const tarefa of tarefasTotais){
+            modelo.criaTarefa(tarefa)
+        }
+
+       
     },
     apagaTarefa(id) {
         const listaDeTarefasAtualizada = modelo.tarefas.filter((tarefaAtual) => {
@@ -69,7 +68,8 @@ $meuFormulario.addEventListener('submit', (e) =>{
     }
     
     modelo.criaTarefa(novaTarefa);
-    localStorage.setItem("Tarefas", JSON.stringify(tarefas))
+    tarefasTotais.push(novaTarefa);
+    localStorage.setItem("Tarefas", JSON.stringify(tarefasTotais));
 
     $meuFormulario.reset();
     $meuFormulario.inConteudo.focus();
