@@ -1,24 +1,23 @@
 const $meuFormulario = document.querySelector('#form');
-const $listaPostagens = document.querySelector('#listaPostagens')
+const $listaTarefas = document.querySelector('#listaTarefas')
+const tarefas = JSON.parse(localStorage.getItem("Tarefas")) || [];
+
+
 const modelo = {
-        postagens: [
+        tarefas: [
         {
-            id: Date.now(),
+            id: 1,
             owner: 'francopoffo',
             content: 'CTD'
         }
     ],
     criaTarefa(info, somenteHTML = false){
-        idDoPost = Date.now();
+        
         if(!somenteHTML){
-        modelo.postagens.push({
-            id: info.id || idDoPost,
-            owner: info.owner,
-            content: info.content
-        })
+        tarefas.push(info);
         }
-        $listaPostagens.insertAdjacentHTML('afterbegin', `
-            <li data-id="${idDoPost}">
+        $listaTarefas.insertAdjacentHTML('afterbegin', `
+            <li data-id="${info.id}">
             <button class="botao__apagar">X</button>
             <span contenteditable>
             ${info.content}       
@@ -26,20 +25,26 @@ const modelo = {
             </li>
     
         `)
+        
     },
     leTarefa(){
-        modelo.postagens.forEach(({id, owner, content}) => {
+        modelo.tarefas.forEach(({id, owner, content}) => {
             modelo.criaTarefa({id, owner: owner, content: content}, true);
+            
+        })
+        tarefas.forEach((tarefa) =>{
+            modelo.criaTarefa(tarefa);
         })
     },
     apagaTarefa(id) {
-        const listaDeTarefasAtualizada = modelo.postagens.filter((tarefaAtual) => {
+        const listaDeTarefasAtualizada = modelo.tarefas.filter((tarefaAtual) => {
             return tarefaAtual.id !== Number(id);
         })
-        modelo.postagens = listaDeTarefasAtualizada;
+        modelo.tarefas = listaDeTarefasAtualizada;
+        
     },
     atualizaTarefa(id, novoConteudo) {
-        const tarefaAtualizada = modelo.postagens.find((post) => {
+        const tarefaAtualizada = modelo.tarefas.find((post) => {
             return post.id === Number(id);
         });
         tarefaAtualizada.content = novoConteudo
@@ -50,13 +55,24 @@ const modelo = {
 
 // CREATE
 
+
 $meuFormulario.addEventListener('submit', (e) =>{
     e.preventDefault();
-    let $conteudoDaPostagem = document.querySelector('#inConteudo');
-    
-    modelo.criaTarefa({owner: 'francopoffo', content: $conteudoDaPostagem.value});
+    let $conteudoDaTarefa = document.querySelector('#inConteudo');
 
-    $conteudoDaPostagem = '';
+    idDoPost = Date.now();
+
+    const novaTarefa = {
+        id: idDoPost,
+        owner: 'francopoffo',
+        content: $conteudoDaTarefa.value
+    }
+    
+    modelo.criaTarefa(novaTarefa);
+    localStorage.setItem("Tarefas", JSON.stringify(tarefas))
+
+    $meuFormulario.reset();
+    $meuFormulario.inConteudo.focus();
 })
 
 
@@ -66,7 +82,7 @@ modelo.leTarefa();
 
 //UPDATE
 
-$listaPostagens.addEventListener('input', function (dados) {
+$listaTarefas.addEventListener('input', function (dados) {
     
     const itemAtual = dados.target;
     const id = itemAtual.parentNode.getAttribute('data-id');
@@ -77,7 +93,7 @@ $listaPostagens.addEventListener('input', function (dados) {
 
 //DELETE
 
-$listaPostagens.addEventListener('click', function(dados) {
+$listaTarefas.addEventListener('click', function(dados) {
     const itemAtual = dados.target;
     const botaoApaga = dados.target.classList.contains('botao__apagar');
 
@@ -90,7 +106,5 @@ $listaPostagens.addEventListener('click', function(dados) {
         modelo.apagaTarefa(id);
         // Manipula o HTML
         itemAtual.parentNode.remove();
-
-}
-}
-)
+    }   
+})
