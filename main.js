@@ -1,6 +1,6 @@
 const $meuFormulario = document.querySelector('#form');
 const $listaTarefas = document.querySelector('#listaTarefas')
-const tarefasTotais = JSON.parse(localStorage.getItem("Tarefas")) || [];
+let tarefasTotais = JSON.parse(localStorage.getItem("Tarefas")) || [];
 
 
 const modelo = {
@@ -40,7 +40,14 @@ const modelo = {
             return tarefaAtual.id !== Number(id);
         })
         modelo.tarefas = listaDeTarefasAtualizada;
+
+        const listaDeTarefasLocalStorage = tarefasTotais.filter((tarefaAtual) => {
+            return tarefaAtual.id !== Number(id);
+        })
+        tarefasTotais = listaDeTarefasLocalStorage;
         
+        localStorage.setItem("Tarefas", JSON.stringify(tarefasTotais));
+
     },
     atualizaTarefa(id, novoConteudo) {
         const tarefaAtualizada = modelo.tarefas.find((post) => {
@@ -69,6 +76,7 @@ $meuFormulario.addEventListener('submit', (e) =>{
     
     modelo.criaTarefa(novaTarefa);
     tarefasTotais.push(novaTarefa);
+
     localStorage.setItem("Tarefas", JSON.stringify(tarefasTotais));
 
     $meuFormulario.reset();
