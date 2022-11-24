@@ -15,7 +15,7 @@ const modelo = {
       "afterbegin",
       `
             <li data-id="${tarefa.id}">
-            <button class="botao__apagar">X</button>
+            <button class="botao__apagar">x</button>
             <span contenteditable>
             ${tarefa.content}       
             </span>

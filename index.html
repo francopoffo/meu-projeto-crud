@@ -4,16 +4,21 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="reset.css"/>
+    <link rel="stylesheet" href="estilos.css">
     <title>Meu projeto para treinar CRUD</title>
   </head>
   <body>
-    <section>
-      <form id="form">
-        <input placeholder="Digite seu post" id="inConteudo" />
-        <button type="submit">Enviar</button>
-      </form>
+    <main>
+      <section class="principal">
+        <h1>Minha lista de tarefas de hoje</h1>
+        <form id="form">
+          <input placeholder="Escreva a tarefa" id="inConteudo" />
+          <button type="submit">Enviar</button>
+        </form>
+      </section>
       <ul id="listaTarefas"></ul>
-    </section>
+    </main>
     <script src="main.js"></script>
   </body>
 </html>
